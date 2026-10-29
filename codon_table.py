@@ -92,3 +92,11 @@ def validate_sequence(raw):
         raise ValueError("Invalid character(s): " + ", ".join(bad)
                          + ". Only A, T, G and C are allowed.")
     return seq
+
+
+def split_codons(seq):
+    """Split a sequence into complete codons (groups of three nucleotides)."""
+    codons = []
+    for i in range(0, len(seq) - 2, 3):
+        codons.append(seq[i:i + 3])
+    return codons
