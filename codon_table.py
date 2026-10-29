@@ -133,3 +133,32 @@ def mark_codons(results):
 def get_leftover(seq):
     """Return the 1 or 2 trailing nucleotides that do not form a full codon."""
     return seq[len(seq) - len(seq) % 3:]
+
+
+# Three-letter abbreviations used in the codon table grid.
+ABBREVIATIONS = {
+    "Phenylalanine": "Phe", "Leucine": "Leu", "Isoleucine": "Ile",
+    "Methionine": "Met", "Valine": "Val", "Serine": "Ser", "Proline": "Pro",
+    "Threonine": "Thr", "Alanine": "Ala", "Tyrosine": "Tyr", "Histidine": "His",
+    "Glutamine": "Gln", "Asparagine": "Asn", "Lysine": "Lys",
+    "Aspartic acid": "Asp", "Glutamic acid": "Glu", "Cysteine": "Cys",
+    "Tryptophan": "Trp", "Arginine": "Arg", "Glycine": "Gly", "Stop": "Stop",
+}
+
+
+def display_table():
+    """Print all 64 codons as a grid (rows = 1st base, columns = 2nd base)."""
+    bases = "TCAG"
+    print("\nThe Standard Genetic Code (DNA codons)")
+    print("=" * 65)
+    print("1st    " + "      ".join("{:<8}".format("2nd: " + b) for b in bases) + "     3rd")
+    print("-" * 65)
+    for first in bases:
+        for third in bases:
+            cells = []
+            for second in bases:
+                codon = first + second + third
+                cells.append("{} {:<4}".format(codon, ABBREVIATIONS[CODON_TABLE[codon]]))
+            label = first if third == "T" else " "
+            print(" {}     ".format(label) + "      ".join(cells) + "     " + third)
+        print("-" * 65)
