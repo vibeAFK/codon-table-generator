@@ -1,3 +1,3 @@
 # Codon Table Generator
 
-Translates DNA/RNA sequences into amino acids.
+A Python program that translates DNA and RNA sequences into amino acids using the standard genetic code.

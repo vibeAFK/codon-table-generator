@@ -1,4 +1,8 @@
 __pycache__/
 *.pyc
 .venv/
+.claude/
+.gemini/
 .aider*
+opencode.json
+.opencode/
