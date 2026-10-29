@@ -76,22 +76,33 @@ assert len(CODON_TABLE) == 64, "The codon table must contain 64 codons"
 
 
 VALID_DNA = set("ATGC")
+VALID_RNA = set("AUGC")
+
+
+def detect_mode(seq):
+    """Return "RNA" if the sequence contains U, otherwise "DNA"."""
+    return "RNA" if "U" in seq else "DNA"
 
 
 def validate_sequence(raw):
-    """Clean the input and check that it only contains A, T, G and C.
+    """Clean the input and check it is a valid DNA or RNA sequence.
 
-    Returns the cleaned sequence in upper case.
-    Raises ValueError if the input is empty or has invalid characters.
+    Returns (sequence, mode) where mode is "DNA" or "RNA".
+    Raises ValueError if the input is empty, mixes T and U,
+    or contains characters other than A, T/U, G and C.
     """
     seq = "".join(raw.split()).upper()  # remove all whitespace, make upper case
     if not seq:
         raise ValueError("The sequence is empty.")
-    bad = sorted(set(seq) - VALID_DNA)
+    if "T" in seq and "U" in seq:
+        raise ValueError("The sequence contains both T and U. Use DNA (T) or RNA (U), not both.")
+    mode = detect_mode(seq)
+    allowed = VALID_RNA if mode == "RNA" else VALID_DNA
+    bad = sorted(set(seq) - allowed)
     if bad:
         raise ValueError("Invalid character(s): " + ", ".join(bad)
-                         + ". Only A, T, G and C are allowed.")
-    return seq
+                         + ". Only " + ", ".join(sorted(allowed)) + " are allowed for " + mode + ".")
+    return seq, mode
 
 
 def split_codons(seq):
@@ -187,19 +198,26 @@ def display_result(results, leftover):
 
 
 def main():
-    """Ask for a sequence, translate it and show the results."""
+    """Ask for a DNA or RNA sequence, translate it and show the results."""
     display_table()
     while True:
-        raw = input("\nEnter a DNA sequence: ")
+        raw = input("\nEnter a DNA or RNA sequence: ")
         try:
-            seq = validate_sequence(raw)
+            seq, mode = validate_sequence(raw)
             break
         except ValueError as error:
             print("Error:", error)
 
-    codons = split_codons(seq)
-    results = mark_codons(translate(codons))
-    display_result(results, get_leftover(seq))
+    print("Detected sequence type:", mode)
+    dna = seq.replace("U", "T")  # the codon table is written with T
+    leftover = get_leftover(dna)
+    results = mark_codons(translate(split_codons(dna)))
+
+    if mode == "RNA":  # show the codons in their RNA form (U instead of T)
+        results = [(p, c.replace("T", "U"), aa, note) for p, c, aa, note in results]
+        leftover = leftover.replace("T", "U")
+
+    display_result(results, leftover)
 
 
 if __name__ == "__main__":
