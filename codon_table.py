@@ -100,3 +100,14 @@ def split_codons(seq):
     for i in range(0, len(seq) - 2, 3):
         codons.append(seq[i:i + 3])
     return codons
+
+
+def translate(codons):
+    """Translate each codon into its amino acid.
+
+    Returns a list of (position, codon, amino_acid) tuples.
+    """
+    results = []
+    for position, codon in enumerate(codons, start=1):
+        results.append((position, codon, CODON_TABLE[codon]))
+    return results
