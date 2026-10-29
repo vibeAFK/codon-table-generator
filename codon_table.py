@@ -111,3 +111,20 @@ def translate(codons):
     for position, codon in enumerate(codons, start=1):
         results.append((position, codon, CODON_TABLE[codon]))
     return results
+
+
+START_CODON = "ATG"
+STOP_CODONS = ("TAA", "TAG", "TGA")
+
+
+def mark_codons(results):
+    """Add a note to each result: start codon, stop codon or nothing."""
+    marked = []
+    for position, codon, amino_acid in results:
+        note = ""
+        if codon == START_CODON:
+            note = "Start codon"
+        elif codon in STOP_CODONS:
+            note = "Stop codon"
+        marked.append((position, codon, amino_acid, note))
+    return marked
