@@ -128,3 +128,8 @@ def mark_codons(results):
             note = "Stop codon"
         marked.append((position, codon, amino_acid, note))
     return marked
+
+
+def get_leftover(seq):
+    """Return the 1 or 2 trailing nucleotides that do not form a full codon."""
+    return seq[len(seq) - len(seq) % 3:]
