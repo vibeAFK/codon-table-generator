@@ -162,3 +162,45 @@ def display_table():
             label = first if third == "T" else " "
             print(" {}     ".format(label) + "      ".join(cells) + "     " + third)
         print("-" * 65)
+
+
+def display_result(results, leftover):
+    """Print the translation as a table, followed by a short summary."""
+    if not results:
+        print("\nNo complete codons found in the sequence.")
+    else:
+        print("\n{:<10}{:<8}{:<16}{}".format("Position", "Codon", "Amino acid", "Note"))
+        print("-" * 46)
+        for position, codon, amino_acid, note in results:
+            print("{:<10}{:<8}{:<16}{}".format(position, codon, amino_acid, note))
+
+        starts = [r[1] for r in results if r[3] == "Start codon"]
+        stops = [r[1] for r in results if r[3] == "Stop codon"]
+        print()
+        print("Codons:", " - ".join(r[1] for r in results))
+        print("Amino acids:", " - ".join(r[2] for r in results))
+        print("Start codon:", starts[0] if starts else "None")
+        print("Stop codon:", stops[0] if stops else "None")
+
+    if leftover:
+        print("Incomplete codon, not translated:", leftover)
+
+
+def main():
+    """Ask for a sequence, translate it and show the results."""
+    display_table()
+    while True:
+        raw = input("\nEnter a DNA sequence: ")
+        try:
+            seq = validate_sequence(raw)
+            break
+        except ValueError as error:
+            print("Error:", error)
+
+    codons = split_codons(seq)
+    results = mark_codons(translate(codons))
+    display_result(results, get_leftover(seq))
+
+
+if __name__ == "__main__":
+    main()
