@@ -73,3 +73,22 @@ CODON_TABLE = {
 
 # Safety check: there must be exactly 64 codons (4 x 4 x 4).
 assert len(CODON_TABLE) == 64, "The codon table must contain 64 codons"
+
+
+VALID_DNA = set("ATGC")
+
+
+def validate_sequence(raw):
+    """Clean the input and check that it only contains A, T, G and C.
+
+    Returns the cleaned sequence in upper case.
+    Raises ValueError if the input is empty or has invalid characters.
+    """
+    seq = "".join(raw.split()).upper()  # remove all whitespace, make upper case
+    if not seq:
+        raise ValueError("The sequence is empty.")
+    bad = sorted(set(seq) - VALID_DNA)
+    if bad:
+        raise ValueError("Invalid character(s): " + ", ".join(bad)
+                         + ". Only A, T, G and C are allowed.")
+    return seq
